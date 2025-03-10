@@ -26,10 +26,6 @@ SECRET_KEY = 'django-insecure-_v(=(2vb314sc^wg^#ej@ktm#9l(#1($jh_zh09v5pm+vghka6
 DEBUG = False
 
 ALLOWED_HOSTS = ["localhost", "127.0.0.1", "backend.healthylifeinitiative.com"]
-CORS_ALLOWED_ORIGINS = [
-    "https://urugowoc.healthylifeinitiative.com",
-    "http://localhost:8080"
-]
 
 # Application definition
 
@@ -61,8 +57,35 @@ MIDDLEWARE = [
 ]
 
 CORS_ALLOW_ALL_ORIGINS = True # Only for development
+
 CORS_ALLOWED_ORIGINS = [
+    "https://urugowoc.healthylifeinitiative.com",
     "http://localhost:5173",
+]
+
+CORS_ALLOW_CREDENTIALS = False  # Enable only if required
+
+# Limit allowed HTTP methods
+CORS_ALLOW_METHODS = [
+    "GET",
+    "POST",
+    "PUT",
+    "PATCH",
+    "DELETE",
+    "OPTIONS",
+]
+
+# Restrict headers
+CORS_ALLOW_HEADERS = [
+    "accept",
+    "accept-encoding",
+    "authorization",
+    "content-type",
+    "dnt",
+    "origin",
+    "user-agent",
+    "x-csrftoken",
+    "x-requested-with",
 ]
 
 ROOT_URLCONF = 'api.urls'
