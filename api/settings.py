@@ -185,6 +185,16 @@ JAZZMIN_SETTINGS = {
     "navigation_expanded": True,
 }
 
+# settings.py
+JAZZMIN_SETTINGS = {
+    "site_header": "Urugo Woc",
+    "site_title": "Urugo Woc Admin",
+    "site_brand": "Urugo Woc", 
+    # "site_logo": "path/to/your/logo.png",
+    "welcome_sign": "Welcome to Urugo Woc Admin Portal", 
+    "copyright": "Urugo Woc", 
+}
+
 
 STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'static'

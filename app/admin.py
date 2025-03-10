@@ -1,7 +1,11 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from .models import Dining, DiningBooking, User, Listing, Order, OrderItem, Post, Donation, Partner
-
+from django.contrib.auth.models import Group
+from rest_framework_simplejwt.token_blacklist.models import (
+    BlacklistedToken,
+    OutstandingToken
+)
 class CustomUserAdmin(UserAdmin):
     model = User
     list_display = ('email', 'first_name', 'last_name', 'role', 'is_active', 'is_staff', 'is_superuser')
@@ -27,3 +31,7 @@ class CustomUserAdmin(UserAdmin):
 
 admin.site.register(User, CustomUserAdmin)
 admin.site.register([Listing, Order, OrderItem, Post, Donation, Partner, Dining, DiningBooking])
+
+admin.site.unregister(Group)
+admin.site.unregister(BlacklistedToken)
+admin.site.unregister(OutstandingToken)
