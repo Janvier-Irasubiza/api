@@ -56,14 +56,14 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-CORS_ALLOW_ALL_ORIGINS = True # Only for development
+CORS_ALLOW_ALL_ORIGINS = False
 
 CORS_ALLOWED_ORIGINS = [
     "https://urugowoc.healthylifeinitiative.com",
     "http://localhost:5173",
 ]
 
-CORS_ALLOW_CREDENTIALS = False  # Enable only if required
+CORS_ALLOW_CREDENTIALS = False
 
 # Limit allowed HTTP methods
 CORS_ALLOW_METHODS = [
