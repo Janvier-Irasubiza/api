@@ -28,9 +28,9 @@ class CustomUserAdmin(UserAdmin):
         ),
     )
 
-
+# admin.site.register(OrderItem)
 admin.site.register(User, CustomUserAdmin)
-admin.site.register([Listing, Order, OrderItem, Post, Donation, Partner, Dining, DiningBooking])
+admin.site.register([Listing, Order, Post, Donation, Partner, Dining, DiningBooking])
 
 admin.site.unregister(Group)
 admin.site.unregister(BlacklistedToken)

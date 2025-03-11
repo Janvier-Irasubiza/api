@@ -77,7 +77,7 @@ class BlogPostViewSet(viewsets.ModelViewSet):
 
 # Item ViewSet
 class ItemViewSet(viewsets.ModelViewSet):
-    queryset = Listing.objects.all()
+    queryset = Listing.objects.all().order_by('created_at')
     serializer_class = ItemSerializer
     permission_classes = [IsAuthenticatedOrReadOnly]
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
@@ -88,7 +88,7 @@ class ItemViewSet(viewsets.ModelViewSet):
     lookup_field = 'slug'
 
 class DiningViewSet(viewsets.ModelViewSet):
-    queryset = Dining.objects.all()
+    queryset = Dining.objects.all().order_by('created_at')
     serializer_class = DiningSerializer
     permission_classes = [IsAuthenticatedOrReadOnly]
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
