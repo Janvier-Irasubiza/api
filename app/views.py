@@ -53,7 +53,7 @@ class LoginView(APIView):
 
 # User ViewSet
 class UserViewSet(viewsets.ModelViewSet):
-    queryset = User.objects.all()
+    queryset = User.objects.all().order_by('date_joined')
     serializer_class = UserSerializer
     permission_classes = [IsAuthenticated, IsAdminUser]
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
