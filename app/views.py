@@ -53,7 +53,7 @@ class LoginView(APIView):
 
 # User ViewSet
 class UserViewSet(viewsets.ModelViewSet):
-    queryset = User.objects.all()
+    queryset = User.objects.all().order_by('date_joined')
     serializer_class = UserSerializer
     permission_classes = [IsAuthenticated, IsAdminUser]
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
@@ -63,7 +63,7 @@ class UserViewSet(viewsets.ModelViewSet):
 
 # BlogPost ViewSet
 class BlogPostViewSet(viewsets.ModelViewSet):
-    queryset = Post.objects.all()
+    queryset = Post.objects.all().order_by('created_at')
     serializer_class = BlogPostSerializer
     permission_classes = [IsAuthenticatedOrReadOnly]
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
@@ -99,7 +99,7 @@ class DiningViewSet(viewsets.ModelViewSet):
 
 # Donation ViewSet
 class DonationViewSet(viewsets.ModelViewSet):
-    queryset = Donation.objects.all()
+    queryset = Donation.objects.all().order_by('donated_at')
     serializer_class = DonationSerializer
     permission_classes = [IsAuthenticated]
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
@@ -109,7 +109,7 @@ class DonationViewSet(viewsets.ModelViewSet):
 
 # Order ViewSet
 class OrderViewSet(viewsets.ModelViewSet):
-    queryset = Order.objects.all()
+    queryset = Order.objects.all().order_by('created_at')
     serializer_class = OrderSerializer
     permission_classes = [IsAuthenticated]
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
@@ -122,7 +122,7 @@ class OrderViewSet(viewsets.ModelViewSet):
 
 # OrderItem ViewSet
 class OrderItemViewSet(viewsets.ModelViewSet):
-    queryset = OrderItem.objects.all()
+    queryset = OrderItem.objects.all().order_by('id')
     serializer_class = OrderItemSerializer
     permission_classes = [IsAuthenticated]
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
@@ -131,7 +131,7 @@ class OrderItemViewSet(viewsets.ModelViewSet):
     ordering_fields = ['quantity', 'price']
 
 class PartnerViewSet(viewsets.ModelViewSet):
-    queryset = Partner.objects.all()
+    queryset = Partner.objects.all().order_by('id')
     serializer_class = PartnerSerializer
     permission_classes = [IsAuthenticatedOrReadOnly]
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
@@ -141,7 +141,7 @@ class PartnerViewSet(viewsets.ModelViewSet):
 
 
 class DiningBookingViewSet(viewsets.ModelViewSet):
-    queryset = DiningBooking.objects.all()
+    queryset = DiningBooking.objects.all().order_by('booking_time')
     serializer_class = DiningBookingSerializer
     permission_classes = [IsAuthenticated]
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
