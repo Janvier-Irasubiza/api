@@ -8,7 +8,14 @@ from django.contrib.auth import authenticate
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import SearchFilter, OrderingFilter
 from rest_framework.pagination import PageNumberPagination
-from .models import Dining, DiningBooking, User, Post, Listing, Donation, Order, OrderItem, Partner
+from django.core.validators import validate_email
+from django.core.exceptions import ValidationError
+from rest_framework_simplejwt.exceptions import TokenError
+from django.views.decorators.csrf import csrf_exempt
+from django.utils.decorators import method_decorator
+from .models import (
+    Dining, DiningBooking, User, Post, Listing, Donation, Order, OrderItem, Partner
+)
 from .serializers import (
     DiningBookingSerializer,
     DiningSerializer,
@@ -38,18 +45,104 @@ class RegisterView(APIView):
 
 # User Login View
 class LoginView(APIView):
+    permission_classes = [AllowAny]
+
     def post(self, request):
-        email = request.data.get('email')
-        password = request.data.get('password')
-        user = authenticate(email=email, password=password)
-        
-        if user:
+        # Input validation
+        email = request.data.get('email', '').strip().lower()
+        password = request.data.get('password', '').strip()
+
+        if not email or not password:
+            return Response(
+                {'error': 'Both email and password are required'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        try:
+            # Validate email format
+            validate_email(email)
+        except ValidationError:
+            return Response(
+                {'error': 'Invalid email format'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        # Authentication
+        try:
+            user = authenticate(request=request, email=email, password=password)
+            
+            if not user:
+                return Response(
+                    {'error': 'Invalid credentials'},
+                    status=status.HTTP_401_UNAUTHORIZED
+                )
+
+            if not user.is_active:
+                return Response(
+                    {'error': 'Account is not active'},
+                    status=status.HTTP_403_FORBIDDEN
+                )
+
+            # Token generation
             refresh = RefreshToken.for_user(user)
             return Response({
                 'refresh': str(refresh),
                 'access': str(refresh.access_token),
+                'user_id': user.id,
+                'email': user.email,
+                'role': user.role
             }, status=status.HTTP_200_OK)
-        return Response({'error': 'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)
+
+        except Exception as e:
+            # Log the error here (e.g., using logging module)
+            return Response(
+                {'error': 'Authentication failed'},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
+        
+# User Logout View
+class LogoutView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        try:
+            refresh_token = request.data.get('refresh')
+            logger.debug(f"Attempting logout with refresh token: {refresh_token}")  # Add logging
+            
+            if not refresh_token:
+                logger.error("No refresh token provided")
+                return Response(
+                    {'error': 'Refresh token is required'},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+
+            token = RefreshToken(refresh_token)
+            token.blacklist()
+            logger.info(f"Successfully blacklisted token for user {request.user.email}")
+
+            response = Response(
+                {'status': 'success', 'message': 'Successfully logged out'},
+                status=status.HTTP_200_OK
+            )
+            
+            # Add security headers
+            response.delete_cookie('access_token')
+            response.delete_cookie('refresh_token')
+            return response
+
+        except TokenError as e:
+            logger.error(f"Token error: {str(e)}")
+            return Response(
+                {'error': 'Invalid refresh token'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+            
+        except Exception as e:
+            logger.critical(f"Critical logout error: {str(e)}")  # Log full error
+            return Response(
+                {'error': 'Internal server error'},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
 
 # User ViewSet
 class UserViewSet(viewsets.ModelViewSet):

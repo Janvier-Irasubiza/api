@@ -1,12 +1,20 @@
 from rest_framework import serializers
-from .models import Dining, DiningBooking, User, Post, Listing, Donation, Order, OrderItem, Partner
+from django.contrib.auth import get_user_model
+from .models import Dining, DiningBooking, User as UserModel, Post, Listing, Donation, Order, OrderItem, Partner
+
+User = get_user_model()
 
 # User Serializer
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
-        model = User
-        fields = ['id', 'email', 'first_name', 'last_name', 'phone_number', 'role', 'is_active']
+        model = UserModel
+        fields = ['id', 'email', 'first_name', 'last_name', 'phone_number', 'role', 'password', 'is_active']
+        extra_kwargs = {'password': {'write_only': True}}  # Ensure password is write-only
 
+    def create(self, validated_data):
+        # Use create_user to properly hash the password
+        return User.objects.create_user(**validated_data)
+    
 # BlogPost Serializer
 class BlogPostSerializer(serializers.ModelSerializer):
     published_by = UserSerializer(read_only=True)
@@ -24,7 +32,7 @@ class ItemSerializer(serializers.ModelSerializer):
 class DiningSerializer(serializers.ModelSerializer):
     class Meta:
         model = Dining
-        fields = ['id', 'title', 'slug', 'short_desc', 'description', 'image', 'location', 'created_at', 'active', 'category']
+        fields = ['id', 'title', 'slug', 'short_desc', 'description', 'image', 'location', 'created_at', 'in_use', 'category']
 
 class DiningBookingSerializer(serializers.ModelSerializer):
     class Meta:
