@@ -29,7 +29,9 @@ from .serializers import (
 )
 
 # User Registration View
+@method_decorator(csrf_exempt, name='dispatch')
 class RegisterView(APIView):
+    authentication_classes = []
     permission_classes = [AllowAny]
 
     def post(self, request):
@@ -40,11 +42,17 @@ class RegisterView(APIView):
             return Response({
                 'refresh': str(refresh),
                 'access': str(refresh.access_token),
+                'user_id': user.id,
+                'email': user.email,
+                'first_name': user.first_name,
+                'last_name': user.last_name,
+                'phone_number': user.phone_number,
             }, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 # User Login View
 class LoginView(APIView):
+    authentication_classes = []
     permission_classes = [AllowAny]
 
     def post(self, request):
@@ -90,7 +98,9 @@ class LoginView(APIView):
                 'access': str(refresh.access_token),
                 'user_id': user.id,
                 'email': user.email,
-                'role': user.role
+                'first_name': user.first_name,
+                'last_name': user.last_name,
+                'phone_number': user.phone_number,
             }, status=status.HTTP_200_OK)
 
         except Exception as e:
@@ -107,10 +117,8 @@ class LogoutView(APIView):
     def post(self, request):
         try:
             refresh_token = request.data.get('refresh')
-            logger.debug(f"Attempting logout with refresh token: {refresh_token}")  # Add logging
             
             if not refresh_token:
-                logger.error("No refresh token provided")
                 return Response(
                     {'error': 'Refresh token is required'},
                     status=status.HTTP_400_BAD_REQUEST
@@ -118,7 +126,6 @@ class LogoutView(APIView):
 
             token = RefreshToken(refresh_token)
             token.blacklist()
-            logger.info(f"Successfully blacklisted token for user {request.user.email}")
 
             response = Response(
                 {'status': 'success', 'message': 'Successfully logged out'},
@@ -131,14 +138,12 @@ class LogoutView(APIView):
             return response
 
         except TokenError as e:
-            logger.error(f"Token error: {str(e)}")
             return Response(
                 {'error': 'Invalid refresh token'},
                 status=status.HTTP_400_BAD_REQUEST
             )
             
         except Exception as e:
-            logger.critical(f"Critical logout error: {str(e)}")  # Log full error
             return Response(
                 {'error': 'Internal server error'},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR
@@ -148,7 +153,7 @@ class LogoutView(APIView):
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all().order_by('date_joined')
     serializer_class = UserSerializer
-    permission_classes = [IsAuthenticated, IsAdminUser]
+    permission_classes = [IsAuthenticated]
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
     filterset_fields = ['role', 'is_active']
     search_fields = ['email', 'first_name', 'last_name']
