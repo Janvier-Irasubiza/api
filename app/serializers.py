@@ -9,7 +9,7 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserModel
         fields = ['id', 'email', 'first_name', 'last_name', 'phone_number', 'role', 'password', 'is_active']
-        extra_kwargs = {'password': {'write_only': True}}  # Ensure password is write-only
+        extra_kwargs = {'password': {'write_only': True}}
 
     def create(self, validated_data):
         # Use create_user to properly hash the password
@@ -21,18 +21,18 @@ class BlogPostSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = Post
-        fields = ['id', 'title', 'slug', 'short_desc', 'description', 'image', 'type', 'published', 'published_by', 'created_at', 'updated_at', 'status']
+        fields = ['id', 'title', 'slug', 'short_desc', 'description', 'poster', 'image', 'type', 'published', 'published_by', 'created_at', 'updated_at', 'status']
 
 # Item Serializer
 class ItemSerializer(serializers.ModelSerializer):
     class Meta:
         model = Listing
-        fields = ['id', 'title', 'slug', 'short_desc', 'description', 'image', 'type', 'category', 'price', 'time_frame', 'available', 'created_at']
+        fields = ['id', 'title', 'slug', 'short_desc', 'description', 'poster', 'image', 'type', 'category', 'price', 'time_frame', 'available', 'created_at']
 
 class DiningSerializer(serializers.ModelSerializer):
     class Meta:
         model = Dining
-        fields = ['id', 'title', 'slug', 'short_desc', 'description', 'image', 'location', 'created_at', 'in_use', 'category']
+        fields = ['id', 'title', 'slug', 'short_desc', 'description', 'poster', 'image', 'location', 'created_at', 'in_use', 'category']
 
 class DiningBookingSerializer(serializers.ModelSerializer):
     class Meta:

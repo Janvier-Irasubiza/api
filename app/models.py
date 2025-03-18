@@ -26,6 +26,7 @@ class BlogStatus(models.TextChoices):
     HAPPENING = 'happening', _('Happening')
     UPCOMING = 'upcoming', _('Upcoming')
     ARCHIVED = 'archived', _('Archived')
+    RECENT = 'recent', _('Recent')
 
 # Item Types
 class ItemTypes(models.TextChoices):
@@ -43,6 +44,7 @@ class AccommodationTypes(models.TextChoices):
     FAMILY = 'family', _('Family')
     SINGLE = 'single', _('Single')
     COUPLE = 'couple', _('Couple')   
+    GENERAL = 'general', _('General')
 
 class DiningTypes(models.TextChoices):
     AFRICAN_DISH = 'african_dish', _('African Dish')
@@ -144,6 +146,7 @@ class Post(models.Model):
     title = models.CharField(max_length=100)
     short_desc = models.TextField(blank=True, null=True)
     description = models.TextField()
+    poster = models.ImageField(upload_to='blog/', blank=True, null=True)
     image = models.ImageField(upload_to='blog/', blank=True, null=True)
     type = models.CharField(
         _('type'),
@@ -181,6 +184,7 @@ class Listing(models.Model):
     title = models.CharField(max_length=100)
     short_desc = models.TextField(blank=True, null=True)
     description = models.TextField()
+    poster = models.ImageField(upload_to='listings/', blank=True, null=True)
     image = models.ImageField(upload_to='listings/', blank=True, null=True)
     type = models.CharField(
         _('type'),
@@ -219,6 +223,7 @@ class Dining(models.Model):
     title = models.CharField(max_length=100)
     short_desc = models.TextField(blank=True, null=True)
     description = models.TextField()
+    poster = models.ImageField(upload_to='dining/', blank=True, null=True)
     image = models.ImageField(upload_to='dining/', blank=True, null=True)
     location = models.CharField(max_length=100)
     in_use = models.BooleanField(default=True)
