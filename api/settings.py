@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-_v(=(2vb314sc^wg^#ej@ktm#9l(#1($jh_zh09v5pm+vghka6
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["localhost", "127.0.0.1", "backend.healthylifeinitiative.com"]
+ALLOWED_HOSTS = ["localhost", "127.0.0.1", "bd.urugowoc.bscholarz.com"]
 
 # Application definition
 
@@ -65,13 +65,13 @@ SIMPLE_JWT = {
 CORS_ALLOW_ALL_ORIGINS = True
 
 CORS_ALLOWED_ORIGINS = [
-    "https://urugowoc.healthylifeinitiative.com",
+    "https://urugowoc.bscholarz.com",
     "http://localhost:5173",
     "http://127.0.0.1:5173",
 ]
 
 CSRF_TRUSTED_ORIGINS = [
-    "https://urugowoc.healthylifeinitiative.com",
+    "https://urugowoc.bscholarz.com",
     "http://localhost:5173",
     "http://127.0.0.1:5173",
 ]
