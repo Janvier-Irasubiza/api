@@ -1,5 +1,6 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
+from django.core.exceptions import ValidationError
 
 # Enum for social media choices
 class SocialChoices(models.TextChoices):
@@ -87,3 +88,90 @@ class TeamSocialMedia(models.Model):
 
     class Meta:
         verbose_name_plural = 'Team Social Media'
+
+class Slider(models.Model):
+    title = models.CharField(max_length=100)
+    subtitle = models.CharField(max_length=100)
+    image = models.ImageField(
+        upload_to='sliders/',
+        help_text='Upload slider image',
+        null=True,
+        blank=True
+    )
+    action = models.CharField(
+        max_length=100, 
+        blank=True, 
+        null=True, 
+        choices=[
+            ('join', 'Join'),
+            ('donate', 'Donate'),
+            ('none', 'None'),
+        ],
+        default='none'
+    )
+    action_text = models.CharField(
+        max_length=100, 
+        blank=True, 
+        null=True, 
+        help_text='This is the text that will be displayed on the button [Make Impact, Join Us, Donate, etc.]. but make it short and concise'
+    )
+    active = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def clean(self):
+        if not self.image:
+            raise ValidationError({'image': 'Image is required for Slider'})
+        if self.action != 'none' and not self.action_text:
+            raise ValidationError({'action_text': 'Action text is required when an action is selected'})
+
+    def save(self, *args, **kwargs):
+        self.clean()
+        try:
+            super().save(*args, **kwargs)
+        except Exception as e:
+            print(f"Error saving Slider: {str(e)}")
+            raise
+
+    def __str__(self):
+        return self.title
+
+    class Meta:
+        verbose_name_plural = 'Sliders'
+        verbose_name = 'Slider'
+        ordering = ['-created_at']
+
+class Gallery(models.Model):
+    title = models.CharField(max_length=100)
+    image = models.ImageField(upload_to='gallery/')
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return self.title
+    
+    class Meta:
+        verbose_name_plural = 'Gallery'
+        verbose_name = 'Gallery'
+
+class Video(models.Model):
+    title = models.CharField(max_length=100, blank=True, null=True)
+    description = models.TextField(blank=True, null=True)
+    url = models.URLField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return self.title
+    
+
+class Testimonial(models.Model):
+    name = models.CharField(max_length=100)
+    role = models.CharField(max_length=100)
+    quote = models.TextField()
+    image = models.ImageField(upload_to='testimonials/')
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return self.name

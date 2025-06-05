@@ -1,1 +1,9 @@
 db.sqlite3
+db.sqlite3.backup
+venv/
+static/
+media/
+app/__pycache__/
+app/backends/__pycache__/
+about/__pycache__/
+api/__pycache__/
