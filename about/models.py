@@ -155,9 +155,9 @@ class Gallery(models.Model):
         verbose_name = 'Gallery'
 
 class Video(models.Model):
-    title = models.CharField(max_length=100, blank=True, null=True)
-    description = models.TextField(blank=True, null=True)
-    url = models.URLField()
+    title = models.CharField(max_length=100)
+    description = models.TextField(help_text='This is the description of the video. make it short and concise')
+    url = models.URLField(help_text='This is the url of the video. if it is youtube, make sure to use the embed url')
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
