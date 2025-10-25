@@ -11,6 +11,9 @@ class SocialChoices(models.TextChoices):
     YOUTUBE = 'YouTube', _('YouTube')
     WHATSAPP = 'WhatsApp', _('WhatsApp')
     TELEGRAM = 'Telegram', _('Telegram')
+    TIKTOK = 'TikTok', _('TikTok')
+    SNAPCHAT = 'Snapchat', _('Snapchat')
+    REDDIT = 'Reddit', _('Reddit')
 
 # About model
 class About(models.Model):
