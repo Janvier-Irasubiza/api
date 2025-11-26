@@ -14,6 +14,7 @@ from .views import (
     LoginView,
     PartnerViewSet,
     DiningViewSet,
+    DocumentViewSet,
 )
 
 # Initialize router
@@ -29,6 +30,7 @@ router.register(r'donations', DonationViewSet)
 router.register(r'orders', OrderViewSet)
 router.register(r'order-items', OrderItemViewSet)
 router.register(r'partners', PartnerViewSet)
+router.register(r'documents', DocumentViewSet)
 
 # URL patterns
 urlpatterns = [

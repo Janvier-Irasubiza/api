@@ -1,6 +1,9 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
-from .models import Dining, DiningBooking, User, Listing, Order, OrderItem, Post, Donation, Partner
+from .models import Dining, DiningBooking, User, Listing, Order, OrderItem, Post, Donation, Partner, Document
+class DocumentAdmin(admin.ModelAdmin):
+    exclude = ('file_type',)
+
 from django.contrib.auth.models import Group
 from rest_framework_simplejwt.token_blacklist.models import (
     BlacklistedToken,
@@ -31,6 +34,7 @@ class CustomUserAdmin(UserAdmin):
 # admin.site.register(OrderItem)
 admin.site.register(User, CustomUserAdmin)
 admin.site.register([Listing, Order, Post, Donation, Partner, Dining, DiningBooking])
+admin.site.register(Document, DocumentAdmin)
 
 admin.site.unregister(Group)
 admin.site.unregister(BlacklistedToken)

@@ -14,7 +14,7 @@ from rest_framework_simplejwt.exceptions import TokenError
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
 from .models import (
-    Dining, DiningBooking, User, Post, Listing, Donation, Order, OrderItem, Partner
+    Dining, DiningBooking, User, Post, Listing, Donation, Order, OrderItem, Partner, Document
 )
 from .serializers import (
     DiningBookingSerializer,
@@ -26,7 +26,31 @@ from .serializers import (
     OrderSerializer, 
     OrderItemSerializer,
     PartnerSerializer,
+    DocumentSerializer,
 )
+class DocumentViewSet(viewsets.ModelViewSet):
+    queryset = Document.objects.all().order_by('-uploaded_at')
+    permission_classes = [IsAuthenticatedOrReadOnly]
+    filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
+    filterset_fields = ['document_type', 'visibility']
+    search_fields = ['file_name', 'description']
+    ordering_fields = ['uploaded_at']
+
+    def get_queryset(self):
+        user = self.request.user
+        if user.is_authenticated:
+            return Document.objects.all().order_by('-uploaded_at')
+        return Document.objects.filter(visibility='public').order_by('-uploaded_at')
+
+    def get_serializer_class(self):
+        user = self.request.user
+        if user.is_authenticated:
+            from .serializers import DocumentFullSerializer
+            return DocumentFullSerializer
+        return DocumentSerializer
+
+    def perform_create(self, serializer):
+        serializer.save(uploaded_by=self.request.user)
 
 # User Registration View
 @method_decorator(csrf_exempt, name='dispatch')

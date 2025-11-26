@@ -1,6 +1,17 @@
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
-from .models import Dining, DiningBooking, User as UserModel, Post, Listing, Donation, Order, OrderItem, Partner
+from .models import (
+    Dining, 
+    DiningBooking, 
+    User as UserModel, 
+    Post, 
+    Listing, 
+    Donation, 
+    Order, 
+    OrderItem, 
+    Partner, 
+    Document
+)
 
 User = get_user_model()
 
@@ -67,3 +78,15 @@ class PartnerSerializer(serializers.ModelSerializer):
     class Meta:
         model = Partner
         fields = ['id', 'name', 'logo', 'url']
+
+class DocumentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Document
+        fields = ['file_name', 'file', 'description', 'file_type', 'document_type']
+
+# Full Document Serializer for authenticated users
+class DocumentFullSerializer(serializers.ModelSerializer):
+    uploaded_by = UserSerializer(read_only=True)
+    class Meta:
+        model = Document
+        fields = ['id', 'file_name', 'file', 'file_type', 'document_type', 'visibility', 'description', 'uploaded_at', 'uploaded_by']

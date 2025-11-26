@@ -326,3 +326,46 @@ class DiningBooking(models.Model):
     class Meta:
         verbose_name = _('dining booking')
         verbose_name_plural = _('dining bookings')
+
+# Document Model
+import mimetypes
+
+class Document(models.Model):
+    DOCUMENT_TYPES = [
+        ('marketplace', 'Marketplace'),
+        ('accommodation', 'Accommodation'),
+        ('dining', 'Dining'),
+    ]
+
+    VISIBILITY_CHOICES = [
+        ('public', 'Public'),
+        ('private', 'Private'),
+        ('restricted', 'Restricted'),
+        ('internal', 'Internal'),
+    ]
+
+    file_name = models.CharField(max_length=100)
+    file = models.FileField(upload_to='documents/')
+    file_type = models.CharField(max_length=50, blank=True)
+    document_type = models.CharField(max_length=50, choices=DOCUMENT_TYPES)
+    visibility = models.CharField(max_length=20, choices=VISIBILITY_CHOICES, default='private')
+    description = models.TextField(blank=True, null=True)
+    uploaded_at = models.DateTimeField(auto_now_add=True)
+    uploaded_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name='documents')
+
+    def save(self, *args, **kwargs):
+        if self.file:
+            mime_type, _ = mimetypes.guess_type(self.file.name)
+            if mime_type:
+                # Only keep the subtype (e.g., 'mp4' from 'video/mp4')
+                self.file_type = mime_type.split('/')[-1]
+            else:
+                self.file_type = ''
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return f'{self.file_name} - {self.file_type}'
+
+    class Meta:
+        verbose_name = _('document')
+        verbose_name_plural = _('documents')
